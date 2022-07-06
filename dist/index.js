@@ -10080,7 +10080,7 @@ module.exports = copy
 "use strict";
 
 
-const u = (__nccwpck_require__(1463).fromCallback)
+const u = (__nccwpck_require__(9046).fromCallback)
 module.exports = {
   copy: u(__nccwpck_require__(8834)),
   copySync: __nccwpck_require__(9618)
@@ -10095,7 +10095,7 @@ module.exports = {
 "use strict";
 
 
-const u = (__nccwpck_require__(1463).fromPromise)
+const u = (__nccwpck_require__(9046).fromPromise)
 const fs = __nccwpck_require__(1176)
 const path = __nccwpck_require__(1017)
 const mkdir = __nccwpck_require__(8605)
@@ -10142,7 +10142,7 @@ module.exports = {
 "use strict";
 
 
-const u = (__nccwpck_require__(1463).fromCallback)
+const u = (__nccwpck_require__(9046).fromCallback)
 const path = __nccwpck_require__(1017)
 const fs = __nccwpck_require__(7758)
 const mkdir = __nccwpck_require__(8605)
@@ -10250,7 +10250,7 @@ module.exports = {
 "use strict";
 
 
-const u = (__nccwpck_require__(1463).fromCallback)
+const u = (__nccwpck_require__(9046).fromCallback)
 const path = __nccwpck_require__(1017)
 const fs = __nccwpck_require__(7758)
 const mkdir = __nccwpck_require__(8605)
@@ -10468,7 +10468,7 @@ module.exports = {
 "use strict";
 
 
-const u = (__nccwpck_require__(1463).fromCallback)
+const u = (__nccwpck_require__(9046).fromCallback)
 const path = __nccwpck_require__(1017)
 const fs = __nccwpck_require__(1176)
 const _mkdirs = __nccwpck_require__(8605)
@@ -10559,7 +10559,7 @@ module.exports = {
 
 // This is adapted from https://github.com/normalize/mz
 // Copyright (c) 2014-2016 Jonathan Ong me@jongleberry.com and Contributors
-const u = (__nccwpck_require__(1463).fromCallback)
+const u = (__nccwpck_require__(9046).fromCallback)
 const fs = __nccwpck_require__(7758)
 
 const api = [
@@ -10718,7 +10718,7 @@ module.exports = {
 "use strict";
 
 
-const u = (__nccwpck_require__(1463).fromPromise)
+const u = (__nccwpck_require__(9046).fromPromise)
 const jsonFile = __nccwpck_require__(8970)
 
 jsonFile.outputJson = u(__nccwpck_require__(531))
@@ -10800,7 +10800,7 @@ module.exports = outputJson
 
 "use strict";
 
-const u = (__nccwpck_require__(1463).fromPromise)
+const u = (__nccwpck_require__(9046).fromPromise)
 const { makeDir: _makeDir, makeDirSync } = __nccwpck_require__(2751)
 const makeDir = u(_makeDir)
 
@@ -10887,7 +10887,7 @@ module.exports.checkPath = function checkPath (pth) {
 "use strict";
 
 
-const u = (__nccwpck_require__(1463).fromCallback)
+const u = (__nccwpck_require__(9046).fromCallback)
 module.exports = {
   move: u(__nccwpck_require__(2231)),
   moveSync: __nccwpck_require__(2047)
@@ -11047,7 +11047,7 @@ module.exports = move
 "use strict";
 
 
-const u = (__nccwpck_require__(1463).fromCallback)
+const u = (__nccwpck_require__(9046).fromCallback)
 const fs = __nccwpck_require__(7758)
 const path = __nccwpck_require__(1017)
 const mkdir = __nccwpck_require__(8605)
@@ -11094,7 +11094,7 @@ module.exports = {
 
 "use strict";
 
-const u = (__nccwpck_require__(1463).fromPromise)
+const u = (__nccwpck_require__(9046).fromPromise)
 const fs = __nccwpck_require__(1176)
 
 function pathExists (path) {
@@ -11116,7 +11116,7 @@ module.exports = {
 
 
 const fs = __nccwpck_require__(7758)
-const u = (__nccwpck_require__(1463).fromCallback)
+const u = (__nccwpck_require__(9046).fromCallback)
 const rimraf = __nccwpck_require__(8761)
 
 function remove (path, callback) {
@@ -12622,7 +12622,7 @@ module.exports.types = {
   bool:      __nccwpck_require__(4993),
   int:       __nccwpck_require__(1615),
   merge:     __nccwpck_require__(6104),
-  omap:      __nccwpck_require__(9046),
+  omap:      __nccwpck_require__(3899),
   seq:       __nccwpck_require__(7283),
   str:       __nccwpck_require__(3619)
 };
@@ -15642,7 +15642,7 @@ module.exports = (__nccwpck_require__(2011).extend)({
   ],
   explicit: [
     __nccwpck_require__(7900),
-    __nccwpck_require__(9046),
+    __nccwpck_require__(3899),
     __nccwpck_require__(6860),
     __nccwpck_require__(9548)
   ]
@@ -16410,7 +16410,7 @@ module.exports = new Type('tag:yaml.org,2002:null', {
 
 /***/ }),
 
-/***/ 9046:
+/***/ 3899:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -16697,7 +16697,7 @@ try {
 } catch (_) {
   _fs = __nccwpck_require__(7147)
 }
-const universalify = __nccwpck_require__(1463)
+const universalify = __nccwpck_require__(9046)
 const { stringify, stripBom } = __nccwpck_require__(5902)
 
 async function _readFile (file, options = {}) {
@@ -19199,7 +19199,7 @@ exports.getUserAgent = getUserAgent;
 
 /***/ }),
 
-/***/ 1463:
+/***/ 9046:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -21243,6 +21243,7 @@ const { getInput } = __nccwpck_require__(4623)
 
 const REPLACE_DEFAULT = true
 const DELETE_ORPHANED_DEFAULT = false
+const EXECUTE_SOURCE_DEFAULT = false
 
 let context
 
@@ -21417,7 +21418,8 @@ const parseFiles = (files) => {
 				source: item,
 				dest: item,
 				replace: REPLACE_DEFAULT,
-				deleteOrphaned: DELETE_ORPHANED_DEFAULT
+				deleteOrphaned: DELETE_ORPHANED_DEFAULT,
+				executeSource: EXECUTE_SOURCE_DEFAULT
 			}
 		}
 
@@ -21427,7 +21429,9 @@ const parseFiles = (files) => {
 				dest: item.dest || item.source,
 				replace: item.replace === undefined ? REPLACE_DEFAULT : item.replace,
 				deleteOrphaned: item.deleteOrphaned === undefined ? DELETE_ORPHANED_DEFAULT : item.deleteOrphaned,
-				exclude: parseExclude(item.exclude, item.source)
+				exclude: parseExclude(item.exclude, item.source),
+				executeSource: item.executeSource === undefined ? EXECUTE_SOURCE_DEFAULT : item.executeSource,
+				executeOptions: item.executeSource === undefined || item.executeOptions === undefined ? {} : item.executeOptions
 			}
 		}
 
@@ -22335,10 +22339,12 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const core = __nccwpck_require__(2186)
-const fs = __nccwpck_require__(7147)
+const { writeFileSync } = __nccwpck_require__(7147)
+const { mkdirs, pathExistsSync } = __nccwpck_require__(5630)
+const { dirname, join } = __nccwpck_require__(1017)
 
 const Git = __nccwpck_require__(109)
-const { forEach, dedent, addTrailingSlash, pathIsDirectory, copy, remove, arrayEquals } = __nccwpck_require__(8505)
+const { forEach, dedent, addTrailingSlash, pathIsDirectory, copy, remove, arrayEquals, execCmd } = __nccwpck_require__(8505)
 
 const {
 	parseConfig,
@@ -22395,12 +22401,12 @@ const run = async () => {
 
 			// Loop through all selected files of the source repo
 			await forEach(item.files, async (file) => {
-				const fileExists = fs.existsSync(file.source)
+				const fileExists = pathExistsSync(file.source)
 				if (fileExists === false) return core.warning(`Source ${ file.source } not found`)
 
 				const localDestination = `${ git.workingDir }/${ file.dest }`
 
-				const destExists = fs.existsSync(localDestination)
+				const destExists = pathExistsSync(localDestination)
 				if (destExists === true && file.replace === false) return core.warning(`File(s) already exist(s) in destination and 'replace' option is set to false`)
 
 				const isDirectory = await pathIsDirectory(file.source)
@@ -22409,10 +22415,21 @@ const run = async () => {
 
 				if (isDirectory) core.info(`Source is directory`)
 
-				const deleteOrphaned = isDirectory && file.deleteOrphaned
+				let executeSource = file.executeSource
+				if (isDirectory && executeSource) {
+					core.warning(`Option "executeSource: true" set, but ${ source } is a directory; therefore, ignoring "executeSource" option`)
+					executeSource = false
+				}
 
-				await copy(source, dest, deleteOrphaned, file.exclude)
+				if (executeSource) {
+					await mkdirs(dirname(dest))
+					const executeOutput = await execCmd(`node ${ join(process.cwd(), source) } '${ JSON.stringify(file.executeOptions) }'`, git.workingDir)
+					writeFileSync(dest, executeOutput)
+				} else {
+					const deleteOrphaned = isDirectory && file.deleteOrphaned
 
+					await copy(source, dest, deleteOrphaned, file.exclude)
+				}
 				await git.add(file.dest)
 
 				// Commit each file separately, if option is set to false commit all files at once later
