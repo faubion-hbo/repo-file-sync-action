@@ -9654,6 +9654,8 @@ return Promise;
 
 /***/ }),
 
+<<<<<<< HEAD
+=======
 /***/ 9618:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -12534,6 +12536,7 @@ function patch (fs) {
 
 /***/ }),
 
+>>>>>>> 6f1e24e (add back dist/)
 /***/ 3287:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -12622,7 +12625,11 @@ module.exports.types = {
   bool:      __nccwpck_require__(4993),
   int:       __nccwpck_require__(1615),
   merge:     __nccwpck_require__(6104),
+<<<<<<< HEAD
+  omap:      __nccwpck_require__(9046),
+=======
   omap:      __nccwpck_require__(3899),
+>>>>>>> 6f1e24e (add back dist/)
   seq:       __nccwpck_require__(7283),
   str:       __nccwpck_require__(3619)
 };
@@ -15642,7 +15649,11 @@ module.exports = (__nccwpck_require__(2011).extend)({
   ],
   explicit: [
     __nccwpck_require__(7900),
+<<<<<<< HEAD
+    __nccwpck_require__(9046),
+=======
     __nccwpck_require__(3899),
+>>>>>>> 6f1e24e (add back dist/)
     __nccwpck_require__(6860),
     __nccwpck_require__(9548)
   ]
@@ -16410,7 +16421,11 @@ module.exports = new Type('tag:yaml.org,2002:null', {
 
 /***/ }),
 
+<<<<<<< HEAD
+/***/ 9046:
+=======
 /***/ 3899:
+>>>>>>> 6f1e24e (add back dist/)
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -16688,6 +16703,8 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 
 /***/ }),
 
+<<<<<<< HEAD
+=======
 /***/ 6160:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -16804,6 +16821,7 @@ module.exports = { stringify, stripBom }
 
 /***/ }),
 
+>>>>>>> 6f1e24e (add back dist/)
 /***/ 467:
 /***/ ((module, exports, __nccwpck_require__) => {
 
@@ -19199,6 +19217,8 @@ exports.getUserAgent = getUserAgent;
 
 /***/ }),
 
+<<<<<<< HEAD
+=======
 /***/ 9046:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -19231,6 +19251,7 @@ exports.fromPromise = function (fn) {
 
 /***/ }),
 
+>>>>>>> 6f1e24e (add back dist/)
 /***/ 4886:
 /***/ ((module) => {
 
@@ -21236,8 +21257,8 @@ function wrappy (fn, cb) {
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const core = __nccwpck_require__(2186)
+const { existsSync, readFileSync } = __nccwpck_require__(7147)
 const yaml = __nccwpck_require__(1917)
-const fs = __nccwpck_require__(5630)
 const path = __nccwpck_require__(1017)
 const { getInput } = __nccwpck_require__(4623)
 
@@ -21366,9 +21387,10 @@ try {
 
 	core.debug(JSON.stringify(context, null, 2))
 
-	while (fs.existsSync(context.TMP_DIR)) {
+	const tmpDirPath = context.TMP_DIR.toString()
+	while (existsSync(tmpDirPath)) {
 		context.TMP_DIR = `tmp-${ Date.now().toString() }`
-		core.warning(`TEMP_DIR already exists. Using "${ context.TMP_DIR }" now.`)
+		core.warning(`TMP_DIR already exists. Using "${ context.TMP_DIR }" now.`)
 	}
 
 } catch (err) {
@@ -21439,8 +21461,9 @@ const parseFiles = (files) => {
 	})
 }
 
-const parseConfig = async () => {
-	const fileContent = await fs.promises.readFile(context.CONFIG_PATH)
+const parseConfig = () => {
+	const configPath = context.CONFIG_PATH.toString()
+	const fileContent = readFileSync(configPath)
 
 	const configObject = yaml.load(fileContent.toString())
 
@@ -22025,7 +22048,7 @@ module.exports = Git
 /***/ 8505:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-const fs = __nccwpck_require__(5630)
+const { cpSync, lstatSync, rmSync } = __nccwpck_require__(7147)
 const readfiles = __nccwpck_require__(5884)
 const { exec } = __nccwpck_require__(2081)
 const core = __nccwpck_require__(2186)
@@ -22085,8 +22108,8 @@ const execCmd = (command, workingDir, trimResult = true) => {
 
 const addTrailingSlash = (str) => str.endsWith('/') ? str : str + '/'
 
-const pathIsDirectory = async (path) => {
-	const stat = await fs.lstat(path)
+const pathIsDirectory = (path) => {
+	const stat = lstatSync(path)
 	return stat.isDirectory()
 }
 
@@ -22104,11 +22127,12 @@ const copy = async (src, dest, deleteOrphaned, exclude) => {
 		return true
 	}
 
-	await fs.copy(src, dest, exclude !== undefined && { filter: filterFunc })
+	cpSync(src, dest, exclude !== undefined && { filter: filterFunc })
 
 	// If it is a directory and deleteOrphaned is enabled - check if there are any files that were removed from source dir and remove them in destination dir
 	if (deleteOrphaned) {
 
+		// TODO once readfiles dep. is dropped, can make copy() non-async function
 		const srcFileList = await readfiles(src, { readContents: false, hidden: true })
 		const destFileList = await readfiles(dest, { readContents: false, hidden: true })
 
@@ -22121,18 +22145,16 @@ const copy = async (src, dest, deleteOrphaned, exclude) => {
 					core.debug(`Excluding file ${ file }`)
 				} else {
 					core.debug(`Removing file ${ file }`)
-					await fs.remove(filePath)
+					remove(filePath)
 				}
 			}
 		}
 	}
 }
 
-const remove = async (src) => {
-
+const remove = (src) => {
 	core.debug(`RM: ${ src }`)
-
-	return fs.remove(src)
+	rmSync(src, { recursive: true, force: true })
 }
 
 const arrayEquals = (array1, array2) => Array.isArray(array1) && Array.isArray(array2) && array1.length === array2.length && array1.every((value, i) => value === array2[i])
@@ -22174,6 +22196,8 @@ module.exports = require("child_process");
 
 /***/ }),
 
+<<<<<<< HEAD
+=======
 /***/ 2057:
 /***/ ((module) => {
 
@@ -22182,6 +22206,7 @@ module.exports = require("constants");
 
 /***/ }),
 
+>>>>>>> 6f1e24e (add back dist/)
 /***/ 2361:
 /***/ ((module) => {
 
@@ -22336,8 +22361,13 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const core = __nccwpck_require__(2186)
-const { existsSync, writeFileSync } = __nccwpck_require__(7147)
+<<<<<<< HEAD
+<<<<<<< HEAD
+const { existsSync, mkdirSync, writeFileSync } = __nccwpck_require__(7147)
+=======
+const { existsSync, mkdirSync, writeFileSync } = __nccwpck_require__(7147)
 const { mkdirs } = __nccwpck_require__(5630)
+>>>>>>> 6f1e24e (add back dist/)
 const { dirname } = __nccwpck_require__(1017)
 
 const Git = __nccwpck_require__(109)
@@ -22365,7 +22395,7 @@ const run = async () => {
 	// Reuse octokit for each repo
 	const git = new Git()
 
-	const repos = await parseConfig()
+	const repos = parseConfig()
 
 	const prUrls = []
 
@@ -22397,6 +22427,7 @@ const run = async () => {
 			const modified = []
 
 			// Loop through all selected files of the source repo
+			// TODO once the callback is no longer async (see below TODO); then a regular forEach loop can be used on item.files
 			await forEach(item.files, async (file) => {
 				const fileExists = existsSync(file.source)
 				if (fileExists === false) return core.warning(`Source ${ file.source } not found`)
@@ -22406,7 +22437,7 @@ const run = async () => {
 				const destExists = existsSync(localDestination)
 				if (destExists === true && file.replace === false) return core.warning(`File(s) already exist(s) in destination and 'replace' option is set to false`)
 
-				const isDirectory = await pathIsDirectory(file.source)
+				const isDirectory = pathIsDirectory(file.source)
 				const source = isDirectory ? `${ addTrailingSlash(file.source) }` : file.source
 				const dest = isDirectory ? `${ addTrailingSlash(localDestination) }` : localDestination
 
@@ -22419,7 +22450,7 @@ const run = async () => {
 				}
 
 				if (executeSource) {
-					await mkdirs(dirname(dest))
+					mkdirSync(dirname(dest), { recursive: true })
 					const executeArgs = Object.entries(file.executeArguments).reduce(
 						(accumulator, [ key, value ]) => `${ accumulator } ${ key.replace(/[^a-z0-9]/gi, '') }='${ value }'`,
 						''
@@ -22428,9 +22459,10 @@ const run = async () => {
 					writeFileSync(dest, `${ executeOutput }\n`)
 				} else {
 					const deleteOrphaned = isDirectory && file.deleteOrphaned
-
+					// TODO once copy() is no longer async, this "await" can be removed and the "async" of the callback can be removed
 					await copy(source, dest, deleteOrphaned, file.exclude)
 				}
+
 				await git.add(file.dest)
 
 				// Commit each file separately, if option is set to false commit all files at once later
@@ -22564,11 +22596,10 @@ const run = async () => {
 
 	if (SKIP_CLEANUP === true) {
 		core.info('Skipping cleanup')
-		return
+	} else {
+		remove(TMP_DIR)
+		core.info('Cleanup complete')
 	}
-
-	await remove(TMP_DIR)
-	core.info('Cleanup complete')
 }
 
 run()
@@ -22577,8 +22608,16 @@ run()
 		core.setFailed(err.message)
 		core.debug(err)
 	})
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6f1e24e (add back dist/)
 })();
 
 module.exports = __webpack_exports__;
 /******/ })()
+<<<<<<< HEAD
 ;
+=======
+;
+>>>>>>> 6f1e24e (add back dist/)

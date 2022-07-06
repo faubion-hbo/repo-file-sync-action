@@ -1,4 +1,4 @@
-const fs = require('fs-extra')
+const { cpSync, lstatSync, rmSync } = require('fs')
 const readfiles = require('node-readfiles')
 const { exec } = require('child_process')
 const core = require('@actions/core')
@@ -58,8 +58,8 @@ const execCmd = (command, workingDir, trimResult = true) => {
 
 const addTrailingSlash = (str) => str.endsWith('/') ? str : str + '/'
 
-const pathIsDirectory = async (path) => {
-	const stat = await fs.lstat(path)
+const pathIsDirectory = (path) => {
+	const stat = lstatSync(path)
 	return stat.isDirectory()
 }
 
@@ -77,11 +77,12 @@ const copy = async (src, dest, deleteOrphaned, exclude) => {
 		return true
 	}
 
-	await fs.copy(src, dest, exclude !== undefined && { filter: filterFunc })
+	cpSync(src, dest, exclude !== undefined && { filter: filterFunc })
 
 	// If it is a directory and deleteOrphaned is enabled - check if there are any files that were removed from source dir and remove them in destination dir
 	if (deleteOrphaned) {
 
+		// TODO once readfiles dep. is dropped, can make copy() non-async function
 		const srcFileList = await readfiles(src, { readContents: false, hidden: true })
 		const destFileList = await readfiles(dest, { readContents: false, hidden: true })
 
@@ -94,18 +95,16 @@ const copy = async (src, dest, deleteOrphaned, exclude) => {
 					core.debug(`Excluding file ${ file }`)
 				} else {
 					core.debug(`Removing file ${ file }`)
-					await fs.remove(filePath)
+					remove(filePath)
 				}
 			}
 		}
 	}
 }
 
-const remove = async (src) => {
-
+const remove = (src) => {
 	core.debug(`RM: ${ src }`)
-
-	return fs.remove(src)
+	rmSync(src, { recursive: true, force: true })
 }
 
 const arrayEquals = (array1, array2) => Array.isArray(array1) && Array.isArray(array2) && array1.length === array2.length && array1.every((value, i) => value === array2[i])
