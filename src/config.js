@@ -6,6 +6,7 @@ const { getInput } = require('action-input-parser')
 
 const REPLACE_DEFAULT = true
 const DELETE_ORPHANED_DEFAULT = false
+const EXECUTE_SOURCE_DEFAULT = false
 
 let context
 
@@ -180,7 +181,8 @@ const parseFiles = (files) => {
 				source: item,
 				dest: item,
 				replace: REPLACE_DEFAULT,
-				deleteOrphaned: DELETE_ORPHANED_DEFAULT
+				deleteOrphaned: DELETE_ORPHANED_DEFAULT,
+				executeSource: EXECUTE_SOURCE_DEFAULT
 			}
 		}
 
@@ -190,7 +192,9 @@ const parseFiles = (files) => {
 				dest: item.dest || item.source,
 				replace: item.replace === undefined ? REPLACE_DEFAULT : item.replace,
 				deleteOrphaned: item.deleteOrphaned === undefined ? DELETE_ORPHANED_DEFAULT : item.deleteOrphaned,
-				exclude: parseExclude(item.exclude, item.source)
+				exclude: parseExclude(item.exclude, item.source),
+				executeSource: item.executeSource === undefined ? EXECUTE_SOURCE_DEFAULT : item.executeSource,
+				executeOptions: item.executeSource === undefined || item.executeOptions === undefined ? {} : item.executeOptions
 			}
 		}
 

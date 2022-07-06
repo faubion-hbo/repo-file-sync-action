@@ -1,8 +1,10 @@
 const core = require('@actions/core')
-const fs = require('fs')
+const { existsSync, writeFileSync } = require('fs')
+const { mkdirs } = require('fs-extra')
+const { dirname, join } = require('path')
 
 const Git = require('./git')
-const { forEach, dedent, addTrailingSlash, pathIsDirectory, copy, remove, arrayEquals } = require('./helpers')
+const { forEach, dedent, addTrailingSlash, pathIsDirectory, copy, remove, arrayEquals, execCmd } = require('./helpers')
 
 const {
 	parseConfig,
@@ -59,12 +61,12 @@ const run = async () => {
 
 			// Loop through all selected files of the source repo
 			await forEach(item.files, async (file) => {
-				const fileExists = fs.existsSync(file.source)
+				const fileExists = existsSync(file.source)
 				if (fileExists === false) return core.warning(`Source ${ file.source } not found`)
 
 				const localDestination = `${ git.workingDir }/${ file.dest }`
 
-				const destExists = fs.existsSync(localDestination)
+				const destExists = existsSync(localDestination)
 				if (destExists === true && file.replace === false) return core.warning(`File(s) already exist(s) in destination and 'replace' option is set to false`)
 
 				const isDirectory = await pathIsDirectory(file.source)
@@ -73,10 +75,21 @@ const run = async () => {
 
 				if (isDirectory) core.info(`Source is directory`)
 
-				const deleteOrphaned = isDirectory && file.deleteOrphaned
+				let executeSource = file.executeSource
+				if (isDirectory && executeSource) {
+					core.warning(`Option "executeSource: true" set, but ${ source } is a directory; therefore, ignoring "executeSource" option`)
+					executeSource = false
+				}
 
-				await copy(source, dest, deleteOrphaned, file.exclude)
+				if (executeSource) {
+					await mkdirs(dirname(dest))
+					const executeOutput = await execCmd(`node ${ join(process.cwd(), source) } '${ JSON.stringify(file.executeOptions) }'`, git.workingDir)
+					writeFileSync(dest, executeOutput)
+				} else {
+					const deleteOrphaned = isDirectory && file.deleteOrphaned
 
+					await copy(source, dest, deleteOrphaned, file.exclude)
+				}
 				await git.add(file.dest)
 
 				// Commit each file separately, if option is set to false commit all files at once later
