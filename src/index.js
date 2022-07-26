@@ -87,7 +87,7 @@ const run = async () => {
 						(accumulator, [ key, value ]) => `${ accumulator } ${ key }=${ value }`,
 						''
 					).trim()
-					const executeOutput = await execCmd(`./${ source } ${ executeArgs }`, git.workingDir)
+					const executeOutput = await execCmd(`./${ source } ${ executeArgs }`)
 					writeFileSync(dest, executeOutput)
 				} else {
 					const deleteOrphaned = isDirectory && file.deleteOrphaned
