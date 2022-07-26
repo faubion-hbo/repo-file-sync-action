@@ -84,8 +84,8 @@ const run = async () => {
 				if (executeSource) {
 					await mkdirs(dirname(dest))
 					const executeArgs = Object.entries(file.executeArguments).reduce(
-						(accumulator, [key, value]) => `${ accumulator } ${ key }=${ value }`,
-						'',
+						(accumulator, [ key, value ]) => `${ accumulator } ${ key }=${ value }`,
+						''
 					).trim()
 					const executeOutput = await execCmd(`./${ join(process.cwd(), source) } ${ executeArgs }`, git.workingDir)
 					writeFileSync(dest, executeOutput)
