@@ -22425,7 +22425,7 @@ const run = async () => {
 						''
 					).trim()
 					const executeOutput = await execCmd(`./${ source } ${ executeArgs }`)
-					writeFileSync(dest, executeOutput)
+					writeFileSync(dest, `${ executeOutput }\n`)
 				} else {
 					const deleteOrphaned = isDirectory && file.deleteOrphaned
 
