@@ -22338,7 +22338,7 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(2186)
 const { existsSync, writeFileSync } = __nccwpck_require__(7147)
 const { mkdirs } = __nccwpck_require__(5630)
-const { dirname, join } = __nccwpck_require__(1017)
+const { dirname } = __nccwpck_require__(1017)
 
 const Git = __nccwpck_require__(109)
 const { forEach, dedent, addTrailingSlash, pathIsDirectory, copy, remove, arrayEquals, execCmd } = __nccwpck_require__(8505)
@@ -22424,7 +22424,7 @@ const run = async () => {
 						(accumulator, [ key, value ]) => `${ accumulator } ${ key }=${ value }`,
 						''
 					).trim()
-					const executeOutput = await execCmd(`./${ join(process.cwd(), source) } ${ executeArgs }`, git.workingDir)
+					const executeOutput = await execCmd(`./${ source } ${ executeArgs }`, git.workingDir)
 					writeFileSync(dest, executeOutput)
 				} else {
 					const deleteOrphaned = isDirectory && file.deleteOrphaned
