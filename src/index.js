@@ -83,7 +83,11 @@ const run = async () => {
 
 				if (executeSource) {
 					await mkdirs(dirname(dest))
-					const executeOutput = await execCmd(`node ${ join(process.cwd(), source) } '${ JSON.stringify(file.executeOptions) }'`, git.workingDir)
+					const executeArgs = Object.entries(file.executeArguments).reduce(
+						(accumulator, [key, value]) => `${ accumulator } ${ key }=${ value }`,
+						'',
+					).trim()
+					const executeOutput = await execCmd(`./${ join(process.cwd(), source) } ${ executeArgs }`, git.workingDir)
 					writeFileSync(dest, executeOutput)
 				} else {
 					const deleteOrphaned = isDirectory && file.deleteOrphaned
