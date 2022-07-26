@@ -1,7 +1,7 @@
 const core = require('@actions/core')
 const { existsSync, writeFileSync } = require('fs')
 const { mkdirs } = require('fs-extra')
-const { dirname, join } = require('path')
+const { dirname } = require('path')
 
 const Git = require('./git')
 const { forEach, dedent, addTrailingSlash, pathIsDirectory, copy, remove, arrayEquals, execCmd } = require('./helpers')
@@ -87,7 +87,7 @@ const run = async () => {
 						(accumulator, [ key, value ]) => `${ accumulator } ${ key }=${ value }`,
 						''
 					).trim()
-					const executeOutput = await execCmd(`./${ join(process.cwd(), source) } ${ executeArgs }`, git.workingDir)
+					const executeOutput = await execCmd(`./${ source } ${ executeArgs }`, git.workingDir)
 					writeFileSync(dest, executeOutput)
 				} else {
 					const deleteOrphaned = isDirectory && file.deleteOrphaned
