@@ -21431,7 +21431,7 @@ const parseFiles = (files) => {
 				deleteOrphaned: item.deleteOrphaned === undefined ? DELETE_ORPHANED_DEFAULT : item.deleteOrphaned,
 				exclude: parseExclude(item.exclude, item.source),
 				executeSource: item.executeSource === undefined ? EXECUTE_SOURCE_DEFAULT : item.executeSource,
-				executeOptions: item.executeSource === undefined || item.executeOptions === undefined ? {} : item.executeOptions
+				executeArguments: item.executeSource === undefined || item.executeArguments === undefined ? {} : item.executeArguments
 			}
 		}
 
@@ -22339,9 +22339,9 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const core = __nccwpck_require__(2186)
-const { writeFileSync } = __nccwpck_require__(7147)
-const { mkdirs, pathExistsSync } = __nccwpck_require__(5630)
-const { dirname, join } = __nccwpck_require__(1017)
+const { existsSync, writeFileSync } = __nccwpck_require__(7147)
+const { mkdirs } = __nccwpck_require__(5630)
+const { dirname } = __nccwpck_require__(1017)
 
 const Git = __nccwpck_require__(109)
 const { forEach, dedent, addTrailingSlash, pathIsDirectory, copy, remove, arrayEquals, execCmd } = __nccwpck_require__(8505)
@@ -22401,12 +22401,12 @@ const run = async () => {
 
 			// Loop through all selected files of the source repo
 			await forEach(item.files, async (file) => {
-				const fileExists = pathExistsSync(file.source)
+				const fileExists = existsSync(file.source)
 				if (fileExists === false) return core.warning(`Source ${ file.source } not found`)
 
 				const localDestination = `${ git.workingDir }/${ file.dest }`
 
-				const destExists = pathExistsSync(localDestination)
+				const destExists = existsSync(localDestination)
 				if (destExists === true && file.replace === false) return core.warning(`File(s) already exist(s) in destination and 'replace' option is set to false`)
 
 				const isDirectory = await pathIsDirectory(file.source)
@@ -22423,8 +22423,12 @@ const run = async () => {
 
 				if (executeSource) {
 					await mkdirs(dirname(dest))
-					const executeOutput = await execCmd(`node ${ join(process.cwd(), source) } '${ JSON.stringify(file.executeOptions) }'`, git.workingDir)
-					writeFileSync(dest, executeOutput)
+					const executeArgs = Object.entries(file.executeArguments).reduce(
+						(accumulator, [ key, value ]) => `${ accumulator } ${ key.replace(/[^a-z0-9]/gi, '') }='${ value }'`,
+						''
+					).trim()
+					const executeOutput = await execCmd(`./${ source } ${ executeArgs }`)
+					writeFileSync(dest, `${ executeOutput }\n`)
 				} else {
 					const deleteOrphaned = isDirectory && file.deleteOrphaned
 

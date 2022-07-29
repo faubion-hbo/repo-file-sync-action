@@ -1,12 +1,12 @@
 {
   "name": "repo-file-sync-action",
-  "version": "1.17.20",
+  "version": "1.18.0",
   "description": "GitHub Action to keep files like Action workflows or entire directories in sync between multiple repositories.",
   "main": "dist/index.js",
   "scripts": {
-    "lint": "eslint ./src",
-    "start": "node src/index.js",
-    "build": "ncc build src/index.js -o dist"
+    "build": "$(npm bin)/ncc build ./src/index.js -o dist",
+    "start": "$(npm bin)/node ./src/index.js",
+    "lint": "$(npm bin)/eslint ./src"
   },
   "repository": {
     "type": "git",
