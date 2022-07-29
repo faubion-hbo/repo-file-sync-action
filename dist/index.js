@@ -22421,7 +22421,7 @@ const run = async () => {
 				if (executeSource) {
 					await mkdirs(dirname(dest))
 					const executeArgs = Object.entries(file.executeArguments).reduce(
-						(accumulator, [ key, value ]) => `${ accumulator } ${ key }=${ value }`,
+						(accumulator, [ key, value ]) => `${ accumulator } ${ key.replace(/[^a-z0-9]/gi, '') }='${ value }'`,
 						''
 					).trim()
 					const executeOutput = await execCmd(`./${ source } ${ executeArgs }`)
