@@ -1,0 +1,5 @@
+1. Set up repo to auto-add build artifacts if there has been changes to src, etc. dirs (or just run `npm run build`) and check those in...
+or make this a post-commit hook? so we never commit w/o build artifacts and/or have race condition when pushing to mainline (unless we protect mainline w/ PRs only and have the build artifacts uploaded to the PR)
+
+2. Sync node18 in action.yml to .nvmrc (so we don't forget how to specify the node engine for J/TS spec. actions)
+
