@@ -3,3 +3,37 @@ or make this a post-commit hook? so we never commit w/o build artifacts and/or h
 
 2. Sync node18 in action.yml to .nvmrc (so we don't forget how to specify the node engine for J/TS spec. actions)
 
+# Minimize deps.
+
+Are these needed? Could be reworked to use std. libraries?
+
+* @putout/git-status-porcelain, "^1.1.0"
+  only used in 1 place: ...
+* node-readfiles, "0.2.0"
+  only used in 1 place: for determining deleteOrphan functionality
+* action-input-parser, ^1.2.33
+  only used in 1 place:
+  another BetaHuhn creation; look to remove for decoupling
+* js-yaml, "^4.1.0"
+  ???
+
+
+# Get rid of vuln. deps.
+
+NOTE: no vuln. in `npm audit --omit=dev`
+
+currently (as of 2022-08-01) 13: 11 high, 2 crit.
+
+crit.:
+  json-schema
+    brought in via: @betahuhn/config@1.2.0 (dev dep)
+
+high:
+  ansi-regex
+    brought in via: @betahuhn/config@1.2.0, eslint@7.32.0 (dev deps)
+  marked
+    brought in via: @betahuhn/config@1.2.0 (dev dep)
+  npm
+    brought in via: @betahuhn/config@1.2.0 (dev dep)
+  parse-path
+    brought in via: @betahuhn/config@1.2.0 (dev dep)
