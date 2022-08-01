@@ -19078,7 +19078,11 @@ const copy = async (src, dest, deleteOrphaned, exclude) => {
 		return true
 	}
 
-	cpSync(src, dest, exclude !== undefined && { filter: filterFunc })
+	if (exclude !== undefined) {
+		cpSync(src, dest, { recursive: true, filter: filterFunc })
+	} else {
+		cpSync(src, dest, { recursive: true })
+	}
 
 	// If it is a directory and deleteOrphaned is enabled - check if there are any files that were removed from source dir and remove them in destination dir
 	if (deleteOrphaned) {
