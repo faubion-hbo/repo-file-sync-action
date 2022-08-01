@@ -17734,7 +17734,7 @@ const run = async () => {
 					core.info(`executing file ${ source } to generate ${ dest }`)
 					mkdirSync(dirname(dest), { recursive: true })
 					const executeArgs = Object.entries(file.executeArguments).reduce(
-						(accumulator, [ key, value ]) => `${ accumulator } ${ key.replace(/[^a-z0-9]/gi, '') }='${ value }'`,
+						(accumulator, [ key, value ]) => `${ accumulator } ${ key.replace(/[^a-z0-9_-]/gi, '') }='${ value }'`,
 						''
 					).trim()
 					if (executeArgs) {
