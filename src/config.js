@@ -1,6 +1,6 @@
 const core = require('@actions/core')
+const { existsSync, readFileSync } = require('fs')
 const yaml = require('js-yaml')
-const fs = require('fs-extra')
 const path = require('path')
 const { getInput } = require('action-input-parser')
 
@@ -129,9 +129,10 @@ try {
 
 	core.debug(JSON.stringify(context, null, 2))
 
-	while (fs.existsSync(context.TMP_DIR)) {
+	const tmpDirPath = context.TMP_DIR.toString()
+	while (existsSync(tmpDirPath)) {
 		context.TMP_DIR = `tmp-${ Date.now().toString() }`
-		core.warning(`TEMP_DIR already exists. Using "${ context.TMP_DIR }" now.`)
+		core.warning(`TMP_DIR already exists. Using "${ context.TMP_DIR }" now.`)
 	}
 
 } catch (err) {
@@ -202,8 +203,9 @@ const parseFiles = (files) => {
 	})
 }
 
-const parseConfig = async () => {
-	const fileContent = await fs.promises.readFile(context.CONFIG_PATH)
+const parseConfig = () => {
+	const configPath = context.CONFIG_PATH.toString()
+	const fileContent = readFileSync(configPath)
 
 	const configObject = yaml.load(fileContent.toString())
 
