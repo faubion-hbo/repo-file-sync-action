@@ -1,6 +1,5 @@
 const core = require('@actions/core')
-const { existsSync, writeFileSync } = require('fs')
-const { mkdirs } = require('fs-extra')
+const { existsSync, mkdirSync, writeFileSync } = require('fs')
 const { dirname } = require('path')
 
 const Git = require('./git')
@@ -28,7 +27,7 @@ const run = async () => {
 	// Reuse octokit for each repo
 	const git = new Git()
 
-	const repos = await parseConfig()
+	const repos = parseConfig()
 
 	const prUrls = []
 
@@ -60,6 +59,7 @@ const run = async () => {
 			const modified = []
 
 			// Loop through all selected files of the source repo
+			// TODO once the callback is no longer async (see below TODO); then a regular forEach loop can be used on item.files
 			await forEach(item.files, async (file) => {
 				const fileExists = existsSync(file.source)
 				if (fileExists === false) return core.warning(`Source ${ file.source } not found`)
@@ -69,7 +69,7 @@ const run = async () => {
 				const destExists = existsSync(localDestination)
 				if (destExists === true && file.replace === false) return core.warning(`File(s) already exist(s) in destination and 'replace' option is set to false`)
 
-				const isDirectory = await pathIsDirectory(file.source)
+				const isDirectory = pathIsDirectory(file.source)
 				const source = isDirectory ? `${ addTrailingSlash(file.source) }` : file.source
 				const dest = isDirectory ? `${ addTrailingSlash(localDestination) }` : localDestination
 
@@ -82,18 +82,23 @@ const run = async () => {
 				}
 
 				if (executeSource) {
-					await mkdirs(dirname(dest))
+					core.info(`executing file ${ source } to generate ${ dest }`)
+					mkdirSync(dirname(dest), { recursive: true })
 					const executeArgs = Object.entries(file.executeArguments).reduce(
-						(accumulator, [ key, value ]) => `${ accumulator } ${ key.replace(/[^a-z0-9]/gi, '') }='${ value }'`,
+						(accumulator, [ key, value ]) => `${ accumulator } ${ key.replace(/[^a-z0-9_-]/gi, '') }='${ value }'`,
 						''
 					).trim()
+					if (executeArgs) {
+						core.info(`passing arguments ${ executeArgs }`)
+					}
 					const executeOutput = await execCmd(`./${ source } ${ executeArgs }`)
 					writeFileSync(dest, `${ executeOutput }\n`)
 				} else {
 					const deleteOrphaned = isDirectory && file.deleteOrphaned
-
+					// TODO once copy() is no longer async, this "await" can be removed and the "async" of the callback can be removed
 					await copy(source, dest, deleteOrphaned, file.exclude)
 				}
+
 				await git.add(file.dest)
 
 				// Commit each file separately, if option is set to false commit all files at once later
@@ -227,11 +232,10 @@ const run = async () => {
 
 	if (SKIP_CLEANUP === true) {
 		core.info('Skipping cleanup')
-		return
+	} else {
+		remove(TMP_DIR)
+		core.info('Cleanup complete')
 	}
-
-	await remove(TMP_DIR)
-	core.info('Cleanup complete')
 }
 
 run()
