@@ -17691,6 +17691,9 @@ const run = async () => {
 		core.info(`Branch		: ${ item.repo.branch }`)
 		core.info('	')
 		try {
+			// TODO(2): improve integration
+			// get reference to step-level summary for eventually created PRs
+			let summary = await core.summary.addHeading('PRs created/updated')
 
 			// Clone and setup the git repository locally
 			await git.initRepo(item.repo)
@@ -17711,7 +17714,8 @@ const run = async () => {
 			const modified = []
 
 			// Loop through all selected files of the source repo
-			// TODO once the callback is no longer async (see below TODO); then a regular forEach loop can be used on item.files
+			// TODO(1) once the callback is no longer async, then a regular forEach loop can be used on item.files
+			//  (also see below TODO(1))
 			await forEach(item.files, async (file) => {
 				const fileExists = existsSync(file.source)
 				if (fileExists === false) return core.warning(`Source ${ file.source } not found`)
@@ -17748,7 +17752,7 @@ const run = async () => {
 					writeFileSync(dest, `${ executeOutput }\n`)
 				} else {
 					const deleteOrphaned = isDirectory && file.deleteOrphaned
-					// TODO once copy() is no longer async, this "await" can be removed and the "async" of the callback can be removed
+					// TODO(1) once copy() is no longer async, this "await" can be removed, and the "async" of the callback can be removed
 					await copy(source, dest, deleteOrphaned, file.exclude)
 				}
 
@@ -17847,7 +17851,9 @@ const run = async () => {
 				const useCommitAsPRTitle = COMMIT_AS_PR_TITLE && modified.length === 1 && modified[0].useOriginalMessage
 				const pullRequest = await git.createOrUpdatePr(COMMIT_EACH_FILE ? changedFiles : '', useCommitAsPRTitle ? modified[0].commitMessage.split('\n', 1)[0].trim() : undefined)
 
-				core.notice(`Pull Request #${ pullRequest.number } created/updated: ${ pullRequest.html_url }`)
+				// TODO(2)
+				summary = summary.addLink(`${ item.repo.user }/${ item.repo.name }`, `${ pullRequest.html_url }`)
+
 				prUrls.push(pullRequest.html_url)
 
 				if (PR_LABELS !== undefined && PR_LABELS.length > 0 && !FORK) {
@@ -17881,6 +17887,9 @@ const run = async () => {
 	// If we created any PRs, set their URLs as the output
 	if (prUrls) {
 		core.setOutput('pull_request_urls', prUrls)
+		// TODO(2)
+		// also write the job summary!
+		summary.write()
 	}
 
 	if (SKIP_CLEANUP === true) {
