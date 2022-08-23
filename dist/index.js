@@ -17738,7 +17738,7 @@ const run = async () => {
 					mkdirSync(dirname(dest), { recursive: true })
 					const executeArgs = Object.entries(file.executeArguments).reduce(
 						// eslint-disable-next-line quotes
-						(accumulator, [ key, value ]) => `${ accumulator }${ key.replace(/[^a-z0-9_-]/gi, '') }='${ value.replace(/'/g, "'\"'\"'") }' `,
+						(accumulator, [ key, value ]) => `${ accumulator }${ key.replace(/[^a-z0-9_-]/gi, '') }='${ value.replace?.(/'/g, "'\"'\"'") || value }' `,
 						''
 					)
 					if (executeArgs) {
