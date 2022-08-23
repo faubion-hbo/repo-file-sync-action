@@ -232,9 +232,13 @@ const run = async () => {
 	if (prUrls) {
 		core.setOutput('pull_request_urls', prUrls)
 		// in addtion, create a job summary of all PRs
+		const table = [[ 'Link' ]]
+		prUrls.forEach((pr) => {
+			table.push([ `<a href="${ pr }">${ pr }</a>` ])
+		})
 		await core.summary
 			.addHeading('PRs created/updated')
-			.addList(prUrls)
+			.addTable(table)
 			.write()
 	}
 
