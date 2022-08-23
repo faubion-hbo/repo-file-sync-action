@@ -6,7 +6,8 @@
   "scripts": {
     "build": "$(npm bin)/ncc build ./src/index.js -o dist",
     "start": "$(npm bin)/node ./src/index.js",
-    "lint": "$(npm bin)/eslint ./src"
+    "lint": "$(npm bin)/eslint ./src",
+    "truncate": "truncate -s -1"
   },
   "repository": {
     "type": "git",
