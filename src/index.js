@@ -31,6 +31,10 @@ const run = async () => {
 
 	const prUrls = []
 
+	// TODO(2): improve integration
+	// create reference to job summary for this step in case needed
+	let summary = await core.summary.addHeading('PRs created/updated')
+
 	await forEach(repos, async (item) => {
 		core.info(`Repository Info`)
 		core.info(`Slug		: ${ item.repo.name }`)
@@ -39,10 +43,6 @@ const run = async () => {
 		core.info(`Branch		: ${ item.repo.branch }`)
 		core.info('	')
 		try {
-			// TODO(2): improve integration
-			// get reference to step-level summary for eventually created PRs
-			let summary = await core.summary.addHeading('PRs created/updated')
-
 			// Clone and setup the git repository locally
 			await git.initRepo(item.repo)
 
@@ -201,6 +201,7 @@ const run = async () => {
 
 				// TODO(2)
 				summary = summary.addLink(`${ item.repo.user }/${ item.repo.name }`, `${ pullRequest.html_url }`)
+				core.info(`Added link to PR ${ pullRequest.html_url } to the job summary`)
 
 				prUrls.push(pullRequest.html_url)
 
