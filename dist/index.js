@@ -17737,13 +17737,14 @@ const run = async () => {
 					core.info(`executing file ${ source } to generate ${ dest }`)
 					mkdirSync(dirname(dest), { recursive: true })
 					const executeArgs = Object.entries(file.executeArguments).reduce(
-						(accumulator, [ key, value ]) => `${ accumulator } ${ key.replace(/[^a-z0-9_-]/gi, '') }='${ value }'`,
+						// eslint-disable-next-line quotes
+						(accumulator, [ key, value ]) => `${ accumulator }${ key.replace(/[^a-z0-9_-]/gi, '') }='${ value.replace(/'/g, "'\"'\"'") }' `,
 						''
-					).trim()
+					)
 					if (executeArgs) {
 						core.info(`passing arguments ${ executeArgs }`)
 					}
-					const executeOutput = await execCmd(`./${ source } ${ executeArgs }`)
+					const executeOutput = await execCmd(`${ executeArgs }./${ source }`)
 					writeFileSync(dest, `${ executeOutput }\n`)
 				} else {
 					const deleteOrphaned = isDirectory && file.deleteOrphaned
@@ -17896,7 +17897,6 @@ run()
 		core.setFailed(err.message)
 		core.debug(err)
 	})
-
 })();
 
 module.exports = __webpack_exports__;
